@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>用户李华</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+<div class="main">
+    <h1>用户 <span id="username">李华</span></h1>
+    <div class="center">
+        <div>新消息: &nbsp;&nbsp;<span id="message"> </span></div>
+        <hr>
+        <div>
+            发送消息：
+            <form>
+                <input type="text" name="username" placeholder="用户名">
+                <input type="text" name="message" placeholder="消息内容">
+                <input class="float-right" type="button" value="发送" onclick="return subForm()">
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
+<script src="js/lib/jquery-3.3.1.min.js"></script>
+<script src="js/websocket.js"></script>
+<script>
+    function subForm() {
+        $.ajax({
+            type: 'post',
+            url: "/message/sendMsg.do",
+            data: $("form").serialize()
+        });
+        return false;
+    }
+</script>

@@ -1,0 +1,39 @@
+* {
+    font-size: 30px;
+}
+
+.main {
+    margin: 0 auto;
+    border: 10px solid gray;
+    height: 800px;
+    text-align: center;
+}
+
+.center {
+    border: 2px solid deepskyblue;
+    margin: 0 auto;
+    height: 300px;
+    width: 40%;
+    padding: 20px;
+    text-align: left;
+}
+
+#username {
+    color: red;
+}
+
+#message {
+    color: orangered;
+}
+
+form {
+    margin-top: 30px;
+}
+
+.float-right {
+    float: right;
+}
+
+input {
+    margin-top: 10px;
+}

@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<Configuration status="WARN">
+
+    <Appenders>
+
+        <Console name="Console" target="SYSTEM_OUT">
+
+            <!--<PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36} - %msg%n"/>-->
+            <!--<PatternLayout pattern="%c{3.} %-5level - %msg #:%l%n" />-->
+            <PatternLayout pattern="%c{3.} %-5level - %msg%n" />
+        </Console>
+
+    </Appenders>
+
+    <Loggers>
+
+        <!--<logger name="com.ty.share.logger.LoggerTest" level="debug" additivity="false">-->
+            <!--<appender-ref ref="Console"/>-->
+        <!--</logger>-->
+
+        <logger name="com.ty.share.scheduled.ScheduledService" level="info" additivity="false">
+        <appender-ref ref="Console"/>
+        </logger>
+
+        <Root level="info">
+            <AppenderRef ref="Console"/>
+        </Root>
+
+    </Loggers>
+
+</Configuration>
