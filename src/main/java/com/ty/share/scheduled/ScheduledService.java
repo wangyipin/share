@@ -1,5 +1,6 @@
 package com.ty.share.scheduled;
 
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
@@ -12,9 +13,10 @@ import lombok.extern.slf4j.Slf4j;
  **/
 @Slf4j
 @Component
+@PropertySource({"config/system2.properties","config/system.properties"})
 public class ScheduledService {
 
-    @Scheduled(cron = "0/5 * * * * *")
+    @Scheduled(cron = "${time}")
     public void scheduledFunc(){
         log.info("######## 定时任务 ########");
     }
