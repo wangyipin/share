@@ -16,9 +16,8 @@ import java.util.concurrent.TimeUnit;
  * @date: 2019/3/16
  **/
 public class ThreadPool {
-    // todo 1.为什么不使用 Executors.newFixedThreadPool(10);
     /**
-     * 不推荐使用此方法创建线程池
+     * todo 1.为什么不使用 Executors.newFixedThreadPool(10);
      *
      * @see java.util.concurrent.Executors#newFixedThreadPool(int)
      */
