@@ -1,21 +1,24 @@
 package com.ty.share.mailutil;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.mail.javamail.MimeMessageHelper;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
 import javax.mail.internet.MimeMessage;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author 04637
  * @date 2018/12/12
  */
+@Slf4j
 public class MailUtils {
     private static final String HOST = "smtp.163.com";
     private static final Integer PORT = 25;
@@ -23,9 +26,17 @@ public class MailUtils {
     private static final String PASSWORD = "jgt123";
     private static final String EMAIL_FROM = "04637@163.com";
     private static final JavaMailSenderImpl mailSender = createMailSender();
-    private static final Logger logger = LogManager.getLogger();
 
-    // todo 1.异步发送
+    /**
+     * todo 1.为什么不使用 Executors.newFixedThreadPool(10);
+     *
+     * @see java.util.concurrent.Executors#newFixedThreadPool(int)
+     */
+    ExecutorService executorService = Executors.newFixedThreadPool(10);
+
+    /**
+     * todo 2.创建线程池，解释各个参数的含义
+     */
     private static final ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(5, 10,
             30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000));
 
@@ -58,11 +69,11 @@ public class MailUtils {
             messageHelper.setTo(to);
             messageHelper.setSubject(subject);
             messageHelper.setText(html, true);
-            // todo 1.异步发送
+            // todo 3.异步发送
             poolExecutor.execute(()->mailSender.send(mimeMessage));
             return true;
         } catch (Exception e) {
-            logger.error(e.getMessage());
+            log.error(e.getMessage());
             return false;
         }
 
@@ -77,11 +88,11 @@ public class MailUtils {
 
 
     public static void main(String[] args) {
-        // todo 2. css样式
+        // todo 4.css样式
         String html = "<strong style='color:red'>hello 王小明</strong><br><a href='http://localhost:8080/wangxiaoming.html'>进入王小明页面</a>";
         sendHtmlMail("04637@163.com", "hello wold", html);
 
-        // todo 3. 所有任务执行完毕后停止线程池
+        // todo 5.在ServletListener中关闭执行器
         shutDown();
     }
 }

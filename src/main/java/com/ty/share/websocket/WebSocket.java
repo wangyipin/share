@@ -3,8 +3,6 @@ package com.ty.share.websocket;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import java.util.LinkedList;
@@ -12,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import javax.servlet.annotation.WebServlet;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -35,7 +32,7 @@ public class WebSocket {
     /**
      * todo 1.为什么使用 ConcurrentHashMap
      *
-     * @see com.ty.share.threadpool.ThreadPool#main(String[]) }
+     * @see WhyConcurrent#main(String[]) }
      */
     private static final Map<String, List<WebSocket>> clients = new ConcurrentHashMap<>();
 

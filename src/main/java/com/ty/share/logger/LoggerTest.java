@@ -1,6 +1,5 @@
 package com.ty.share.logger;
 
-import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,7 +18,6 @@ public class LoggerTest {
 
     @RequestMapping("/all.do")
     public String all(){
-        LoggerFactory.getLogger(LoggerTest.class);
         log.trace("!!!!!!! TRACE !!!!!!!");
         log.debug("!!!!!!! DEBUG !!!!!!!");
         log.info("!!!!!!! INFO !!!!!!!");
