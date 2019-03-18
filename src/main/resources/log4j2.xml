@@ -15,9 +15,9 @@
 
     <Loggers>
 
-        <!--<logger name="com.ty.share.logger.LoggerTest" level="debug" additivity="false">-->
-            <!--<appender-ref ref="Console"/>-->
-        <!--</logger>-->
+        <logger name="com.ty.share.websocket.WebSocket" level="debug" additivity="false">
+            <appender-ref ref="Console"/>
+        </logger>
 
         <logger name="com.ty.share.scheduled.ScheduledService" level="info" additivity="false">
         <appender-ref ref="Console"/>

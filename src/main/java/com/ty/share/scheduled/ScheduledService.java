@@ -18,6 +18,6 @@ public class ScheduledService {
 
     @Scheduled(cron = "${time}")
     public void scheduledFunc(){
-        log.info("######## 定时任务 ########");
+//        log.info("######## 定时任务 ########");
     }
 }

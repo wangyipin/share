@@ -7,9 +7,12 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
+import javax.servlet.annotation.WebServlet;
 import javax.websocket.OnClose;
 import javax.websocket.OnError;
 import javax.websocket.OnMessage;
@@ -18,56 +21,56 @@ import javax.websocket.Session;
 import javax.websocket.server.PathParam;
 import javax.websocket.server.ServerEndpoint;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * @author 04637
  * @date 2018/12/24
  */
+@Slf4j
 @Component
 @ServerEndpoint("/websocket/{username}")
 public class WebSocket {
-    private static int onlineCount = 0;
 
     /**
-     * 为什么使用 ConcurrentHashMap {@link com.ty.share.threadpool.ThreadPool}
+     * todo 1.为什么使用 ConcurrentHashMap
+     *
+     * @see com.ty.share.threadpool.ThreadPool#main(String[]) }
      */
-    private static final Map<String, WebSocket> clients = new ConcurrentHashMap<>();
-
-    private static final Logger logger = LogManager.getLogger();
+    private static final Map<String, List<WebSocket>> clients = new ConcurrentHashMap<>();
 
     private Session session;
 
     private String username;
 
-    // TODO: 2019/3/16 补充多窗口推送
-    private int windowCount;
-
     @OnOpen
     public void onOpen(@PathParam("username") String username, Session session) {
         this.username = username;
         this.session = session;
-        WebSocket client = clients.get(username);
-        if (client != null) {
-            client.windowCount++;
-            logger.debug("用户: [" + username + "] 打开新的窗口. 窗口数: " + client.windowCount);
+        List<WebSocket> windows = clients.get(username);
+        if (windows != null && !windows.isEmpty()) {
+            // todo 2.多窗口推送
+            windows.add(this);
+            log.debug("用户: [" + username + "] 打开新的窗口. 窗口数: " + windows.size());
         } else {
-            addOnlineCount();
-            this.windowCount++;
-            clients.put(username, this);
-            logger.debug("用户: [" + username + "] 已连接");
+            List<WebSocket> userClients2 = new LinkedList<>();
+            userClients2.add(this);
+            clients.put(username, userClients2);
+            log.debug("用户: [" + username + "] 已连接");
         }
 
     }
 
     @OnClose
     public void onClose() {
-        WebSocket client = clients.get(username);
-        if (client.windowCount > 1) {
-            client.windowCount--;
-            logger.debug("用户: [" + username + "] 关闭了一个窗口. 窗口数: " + client.windowCount);
+        List<WebSocket> windows = clients.get(username);
+        if (windows != null && windows.size() > 1) {
+            // todo 2.多窗口推送
+            windows.removeIf(window -> window.session.getId().equals(session.getId()));
+            log.debug("用户: [" + username + "] 关闭了一个窗口. 窗口数: " + windows.size());
         } else {
             clients.remove(username);
-            logger.debug("用户: [" + username + "] 已断开");
-            subOnlineCount();
+            log.debug("用户: [" + username + "] 已断开");
         }
 
     }
@@ -75,47 +78,22 @@ public class WebSocket {
     @OnMessage
     public void onMessage(String message) {
         JSONObject jo = JSON.parseObject(message);
-        String mes = (String) jo.get("content");
-
-        if (!jo.get("to").equals("All")) {
-            sendMessageTo(mes, jo.get("to").toString());
-        } else {
-            sendMessageAll(mes);
+        String msg = jo.getString("content");
+        String to = jo.getString("to");
+        if (clients.containsKey(to)) {
+            sendMessageTo(msg, jo.get("to").toString());
         }
-
     }
 
     @OnError
     public void onError(Throwable error) {
-        logger.error(error.getMessage());
+        log.error(error.getMessage());
     }
 
     private void sendMessageTo(String message, String to) {
-        WebSocket ws = clients.get(to);
-        if(ws != null){
-            ws.session.getAsyncRemote().sendText(message);
+        for (WebSocket window : clients.get(to)) {
+            window.session.getAsyncRemote().sendText(message);
         }
     }
 
-    private void sendMessageAll(String message) {
-        for (WebSocket item : clients.values()) {
-            item.session.getAsyncRemote().sendText(message);
-        }
-    }
-
-    public static synchronized int getOnlineCount() {
-        return onlineCount;
-    }
-
-    private static synchronized void addOnlineCount() {
-        WebSocket.onlineCount++;
-    }
-
-    private static synchronized void subOnlineCount() {
-        WebSocket.onlineCount--;
-    }
-
-    public static synchronized Map<String, WebSocket> getClients() {
-        return clients;
-    }
 }

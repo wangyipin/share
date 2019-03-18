@@ -2,6 +2,7 @@ package com.ty.share.lombok;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import lombok.experimental.Accessors;
 
 /**
@@ -20,4 +21,8 @@ public class UserInfo {
 
     private String realName;
 
+    // todo 1. get-set
+    // todo 2. 链式 set
+    // todo 3. toString
+    // todo 4. 重写 equals 方法  排除比较项
 }
