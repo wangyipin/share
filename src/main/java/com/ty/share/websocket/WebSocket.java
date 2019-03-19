@@ -2,9 +2,16 @@ package com.ty.share.websocket;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.carrotsearch.sizeof.RamUsageEstimator;
 
+import org.apache.tomcat.websocket.WsSession;
 import org.springframework.stereotype.Component;
 
+import java.lang.management.ManagementFactory;
+import java.lang.management.MemoryMXBean;
+import java.lang.management.MemoryUsage;
+import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +38,11 @@ public class WebSocket {
 
     /**
      * todo 1.为什么使用 ConcurrentHashMap
-     *
-     * @see WhyConcurrent#main(String[]) }
+     * 对比 map
+     * @see WhyConcurrent#main(String[])
+     * 对比 hashtable
+     * @see java.util.Hashtable#put(Object, Object)
+     * @see java.util.concurrent.ConcurrentHashMap#putVal(Object, Object, boolean)
      */
     private static final Map<String, List<WebSocket>> clients = new ConcurrentHashMap<>();
 

@@ -20,10 +20,15 @@ import lombok.extern.slf4j.Slf4j;
  */
 @Slf4j
 public class MailUtils {
+    // 主机名
     private static final String HOST = "smtp.163.com";
+    // 端口号
     private static final Integer PORT = 25;
+    // 发件人帐号
     private static final String USERNAME = "04637@163.com";
+    // 发件人密码
     private static final String PASSWORD = "jgt123";
+    // 发件人署名
     private static final String EMAIL_FROM = "04637@163.com";
     private static final JavaMailSenderImpl mailSender = createMailSender();
 
@@ -36,6 +41,7 @@ public class MailUtils {
 
     /**
      * todo 2.创建线程池，解释各个参数的含义
+     * todo 3.当队列满了且达到最大线程池,触发 rejectedHandler
      */
     private static final ThreadPoolExecutor poolExecutor = new ThreadPoolExecutor(5, 10,
             30, TimeUnit.SECONDS, new LinkedBlockingQueue<>(1000));
